@@ -1,0 +1,16 @@
+.DS_Store
+gcs
+.ipynb_checkpoints
+
+__pycache__/
+
+
+.vscode
+.idea
+*.csv
+*.xlsx
+test.ipynb
+# /scraping/backup
+# /scraping/file
+# /scraping/tmp
+
