@@ -10,7 +10,9 @@ __pycache__/
 *.csv
 *.xlsx
 test.ipynb
+test_function.ipynb
 # /scraping/backup
 # /scraping/file
-# /scraping/tmp
+/scraping/csv
+/scraping/tmp
 
