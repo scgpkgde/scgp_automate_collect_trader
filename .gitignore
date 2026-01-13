@@ -11,7 +11,7 @@ __pycache__/
 *.xlsx
 test.ipynb
 test_function.ipynb
-# /scraping/backup
+/scraping/backup
 # /scraping/file
 /scraping/csv
 /scraping/tmp
