@@ -236,6 +236,7 @@ def principal_export_country(CHROMEDRIVER_PATH):
     )
     df_long = df_long[df_long["country"] != "ประเทศ"].reset_index(drop=True)
 
+    df_long['type'] = 'export'
     df_long.to_csv("/Users/samapatsrihan/work/scgp/scgp_automate_collect_trader/scraping/csv/principal_export_country.csv", index=False)
 
     delete_file = file_path + '/Report.csv'
