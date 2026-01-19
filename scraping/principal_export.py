@@ -107,10 +107,13 @@ def principal_export(CHROMEDRIVER_PATH):
                         file_path+'/Report.csv',
                         skiprows = 5,
                         skipfooter= 6,
-                        header = None, names=['product','value','expansion_rate','proportion']
+                        header = None, names=['product','amount_thb','expansion_rate','proportion']
                     )
     
+    df['data_month']= input_month
+    df['data_year']= int(input_year)+543
     df['type'] ='export'
+
     df.to_csv("/Users/samapatsrihan/work/scgp/scgp_automate_collect_trader/scraping/csv/principal_export.csv", index=False)
 
     delete_file = file_path + '/Report.csv'

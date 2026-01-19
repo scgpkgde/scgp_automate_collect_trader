@@ -113,7 +113,7 @@ def principal_import_country(CHROMEDRIVER_PATH):
         id_vars=["country"],
         value_vars=["value_0", "value_1", "value_2", "value_3"],
         var_name="idx",
-        value_name="value"
+        value_name="amount_thb"
     )
 
     # -------------------------
@@ -209,9 +209,9 @@ def principal_import_country(CHROMEDRIVER_PATH):
     df_long["month_dt"] = df_long["month_idx"].apply(
         lambda x: start_month + pd.DateOffset(months=x)
     )
-    df_long["year"] = df_long["month_dt"].dt.year + 543
+    df_long["data_year"] = df_long["month_dt"].dt.year + 543
 
-    df_long["month"] = df_long["month_dt"].dt.month
+    df_long["data_month"] = df_long["month_dt"].dt.month
 
     # -------------------------
     # 8) Final selection
@@ -219,11 +219,11 @@ def principal_import_country(CHROMEDRIVER_PATH):
     df_long = (
         df_long[[
             "country",
-            "value",
+            "amount_thb",
             "expansion_rate",
             "proportion",
-            "month",
-            "year"
+            "data_month",
+            "data_year"
         ]]
         .reset_index(drop=True)
     )

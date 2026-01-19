@@ -15,6 +15,9 @@ import pandas as pd
 import os
 
 def import_harmonize(CHROMEDRIVER_PATH):
+    tmp_date = datetime.now().date() - relativedelta(months=2)
+    input_month = tmp_date.strftime("%m")
+    input_year = tmp_date.strftime("%Y")
     hs_code = setting['hs_code']
     file_path = "/Users/samapatsrihan/work/scgp/scgp_automate_collect_trader/scraping/tmp"
     URL = 'https://tradereport.moc.go.th/th/stat/reporthscodeimport01'
@@ -94,8 +97,11 @@ def import_harmonize(CHROMEDRIVER_PATH):
         sleep(5)
 
         df = pd.read_csv(file_path + '/Report.csv', skiprows=list(range(3)) + [5], skipfooter=2, usecols= range(1,5))
-        df.rename(columns={'ประเทศ': 'country', 'ปริมาณ': 'quantity', 'มูลค่า': 'value', 'สัดส่วน': 'proportion'}, inplace=True)
+        df.rename(columns={'ประเทศ': 'country', 'ปริมาณ': 'quantity_units', 'มูลค่า': 'amount_thb', 'สัดส่วน': 'proportion'}, inplace=True)
         df['hs_code'] = hs_code
+        df['data_month']= input_month
+        df['data_year']= int(input_year)+543
+        df['type'] = 'import'
 
         delete_file = file_path + '/Report.csv'
         if os.path.exists(delete_file):
