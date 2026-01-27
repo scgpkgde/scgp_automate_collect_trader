@@ -2,41 +2,43 @@ from azure.storage.blob import BlobServiceClient,  __version__
 from io import BytesIO
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from azure.core.exceptions import ResourceNotFoundError 
+from databricks.sdk import WorkspaceClient
 from lib.setting import SETTINGS
 import os
 
-def main_upload(env, container):
-    setting = SETTINGS
-    key = setting[env]['key']
-    rootpath = setting[env]['path']
-    try:   
-        # path = get_path_from_config()
-        sas_url = key
 
-        blob_service_client = BlobServiceClient(account_url=sas_url)
+def main_upload(env):
 
-        # Use the correct container name instead of `path`
-        print('----------- start upload measurement file -----------')
-        container_name = setting[env][container]
-        print(f"Container name: {container_name}")
-        container_client = blob_service_client.get_container_client(container_name)
+    rootpath = SETTINGS[env]['path'] 
+    volume_path = SETTINGS[env]['volume_path']
 
-        print(os.getcwd())
-        print(rootpath)
-        current_directory = os.getcwd()+ rootpath
-        print(current_directory)
-        files = os.listdir(current_directory) 
-        files = [f for f in files if os.path.isfile(os.path.join(current_directory, f))]
+    client = WorkspaceClient(
+        host= SETTINGS[env]['host'],
+        client_id=SETTINGS[env]['client_id'],
+        client_secret=SETTINGS[env]['client_secret']
+    )
 
-        for f in files:
-            file_name = f"{f}" 
-            path_des = os.path.normpath(os.path.join(current_directory, f)) 
-            blob_client = container_client.get_blob_client(file_name)
-            with open(path_des, "rb") as data:
-                blob_client.upload_blob(data, overwrite=True) 
-            print(f"Uploaded {f} to {container_name} successfully")
+    current_directory = os.path.normpath(os.getcwd() + rootpath)
+    print(f"Local directory: {current_directory}")
 
-            # os.remove(path_des)
+    files = os.listdir(current_directory)
+    files = [
+        f for f in files
+        if os.path.isfile(os.path.join(current_directory, f))
+    ]
 
-    except Exception as e:
-        print(e)
+    for f in files:
+        local_file_path = os.path.join(current_directory, f)
+        remote_file_path = f"{volume_path.rstrip('/')}/{f}"
+
+        try:
+            print(f"Uploading {f} → {remote_file_path}")
+            with open(local_file_path, "rb") as data:
+                client.files.upload(
+                    remote_file_path,
+                    data,
+                    overwrite=True
+                )
+            print(f"Uploaded {f} successfully")
+        except Exception as e:
+            print(f"Failed to upload {f}: {e}")
